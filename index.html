@@ -205,6 +205,11 @@ body {
 }
 .faq-link-btn:hover { opacity:0.88; }
 
+/* ── contenteditable 수정 표시 ── */
+[contenteditable="true"]{outline:none;cursor:text;border-radius:3px;transition:background 0.15s;}
+[contenteditable="true"]:hover{background:rgba(255,107,26,0.08);}
+[contenteditable="true"]:focus{background:rgba(255,107,26,0.13);box-shadow:0 0 0 1.5px rgba(255,107,26,0.35);}
+
 /* 저장/복사 버튼 */
 .save-btn {
   width:100%; max-width:860px;
@@ -227,6 +232,7 @@ body {
   <button class="tab-btn active" onclick="switchTab('sched')">📅 시간표</button>
   <button class="tab-btn"        onclick="switchTab('guide')">📋 수업 안내문</button>
   <button class="tab-btn"        onclick="switchTab('pay')">💳 결제 안내</button>
+  <button class="tab-btn"        onclick="switchTab('alimi')">📸 이미지</button>
   <button class="tab-btn external" onclick="openLink('https://ijungde.github.io/-/')">📆 월간</button>
   <button class="tab-btn external" onclick="openLink('https://ijungde.github.io/wawa-manager/')">👥 원생관리</button>
 </div>
@@ -244,6 +250,39 @@ body {
       <div class="sched-box">
         <div class="sched-box-title">✏️ 정보 입력</div>
 
+        <!-- 지점/전화 -->
+        <div style="display:flex; gap:8px;">
+          <div style="flex:1;">
+            <label class="inp-label">지점명 (비워두면 미표시)</label>
+            <input id="inp-branch" type="text" placeholder="예) 수지점"
+              oninput="updateBranch()"
+              class="inp-field" style="width:100%;" />
+          </div>
+          <div style="flex:1;">
+            <label class="inp-label">학원 전화번호 (비워두면 미표시)</label>
+            <input id="inp-tel" type="text" placeholder="예) 031) 297-7001"
+              oninput="updateBranch()"
+              class="inp-field" style="width:100%;" />
+          </div>
+        </div>
+
+        <!-- 로고 체크박스 -->
+        <div>
+          <label class="inp-label">🏷️ 상단 로고 선택 (복수 선택 가능)</label>
+          <div style="display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;background:#FFF5EE;padding:6px 12px;border-radius:20px;border:1.5px solid #FFD4B0;">
+              <input type="checkbox" id="logo-wawa" checked onchange="updateLogo()"> wawa
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;background:#FFF5EE;padding:6px 12px;border-radius:20px;border:1.5px solid #FFD4B0;">
+              <input type="checkbox" id="logo-wplus" checked onchange="updateLogo()"> W+
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;cursor:pointer;background:#FFF5EE;padding:6px 12px;border-radius:20px;border:1.5px solid #FFD4B0;">
+              <input type="checkbox" id="logo-glory" checked onchange="updateLogo()"> 글로리드
+            </label>
+          </div>
+        </div>
+
+        <!-- 이름 + 결제일 (로고 아래) -->
         <div style="display:flex; gap:10px;">
           <div style="flex:1;">
             <label class="inp-label">학생 이름</label>
@@ -251,11 +290,11 @@ body {
               oninput="buildPreview(); buildSms()"
               class="inp-field" />
           </div>
-          <div style="width:90px;">
-            <label class="inp-label">결제일</label>
-            <input id="inp-paydate" type="text" placeholder="예) 10일" value="10일"
+          <div style="width:100px;">
+            <label class="inp-label">결제일 (숫자만 입력)</label>
+            <input id="inp-paydate" type="number" placeholder="10" value="10" min="1" max="31"
               oninput="buildSms()"
-              class="inp-field" />
+              class="inp-field" style="width:100%;" />
           </div>
         </div>
 
@@ -272,13 +311,20 @@ body {
           <span style="font-size:12px; font-weight:700; color:#FF6B1A;">💰 총 합산</span>
           <span id="totalAmount" style="font-size:16px; font-weight:900; color:#FF6B1A;">0원</span>
         </div>
+
+        <div>
+          <label class="inp-label">🎨 테마 색상 (전체 적용)</label>
+          <input type="color" id="inp-theme" value="#FF6B1A"
+            style="width:100%;height:34px;border:none;border-radius:9px;cursor:pointer;display:block;"
+            oninput="applySchedTheme(this.value)" />
+        </div>
       </div>
 
       <!-- 문자 미리보기 -->
       <div class="sched-box">
-        <div class="sched-box-title">📨 교육비 납부 안내 문자</div>
-        <textarea id="smsPreview" readonly class="sms-textarea"></textarea>
-        <div style="margin-top:6px; font-size:11px; color:#bbb; text-align:center;">아래 📨 문자 복사 버튼을 눌러 복사하세요</div>
+        <div class="sched-box-title">📨 교육비 납부 안내 문자 <span style="font-size:10px;color:#aaa;font-weight:400;">(직접 수정 가능)</span></div>
+        <textarea id="smsPreview" class="sms-textarea" style="background:#fff;cursor:text;" spellcheck="false"></textarea>
+        <div style="margin-top:6px; font-size:11px; color:#bbb; text-align:center;">내용 수정 후 📨 문자 복사 버튼으로 복사하세요</div>
       </div>
 
     </div><!-- /sched-col-left -->
@@ -287,10 +333,10 @@ body {
     <div class="sched-col-right">
       <div class="card" id="card-sched" style="width:390px;">
         <div class="header" style="padding:26px 24px 22px;">
-          <div class="logo-row">
-            <span class="logo-text">wawa</span><span class="logo-div">|</span>
-            <span class="logo-text">W+</span><span class="logo-div">|</span>
-            <span class="logo-text">글로리드</span>
+          <div class="logo-row" id="logo-row-sched">
+            <span class="logo-text" id="lt-wawa-s">wawa</span><span class="logo-div" id="ld1-s">|</span>
+            <span class="logo-text" id="lt-wplus-s">W+</span><span class="logo-div" id="ld2-s">|</span>
+            <span class="logo-text" id="lt-glory-s">글로리드</span>
           </div>
           <div style="margin-top:10px; margin-bottom:4px;">
             <span id="schedNameDisplay" style="font-size:22px;font-weight:900;color:rgba(255,255,255,0.5);">이름</span>
@@ -313,8 +359,8 @@ body {
             <div class="notice-item">수업 변동사항은 다음 달 시작일 포함 <strong>10일 전</strong>까지 알려주세요</div>
           </div>
         </div>
-        <div class="footer">
-          <p>와와 학습 코칭 학원 수지점&nbsp;&nbsp;<span class="tel">031) 297-7001</span></p>
+        <div class="footer" id="footer-sched">
+          <p id="footer-sched-txt">와와 학습 코칭 학원 수지점&nbsp;&nbsp;<span class="tel">031) 297-7001</span></p>
         </div>
       </div>
       <!-- 버튼 2개: 이미지 카드 바로 아래 -->
@@ -332,10 +378,10 @@ body {
 <div class="tab-panel" id="tab-guide">
   <div class="card" id="card-guide" style="width:860px;">
     <div class="header">
-      <div class="logo-row">
-        <span class="logo-text">wawa</span><span class="logo-div">|</span>
-        <span class="logo-text">W+</span><span class="logo-div">|</span>
-        <span class="logo-text">글로리드</span>
+      <div class="logo-row" id="logo-row-guide">
+        <span class="logo-text" id="lt-wawa-g">wawa</span><span class="logo-div" id="ld1-g">|</span>
+        <span class="logo-text" id="lt-wplus-g">W+</span><span class="logo-div" id="ld2-g">|</span>
+        <span class="logo-text" id="lt-glory-g">글로리드</span>
       </div>
       <div class="header-title">수강 안내문</div>
       <div class="header-badge">📋 등원 전 꼭 확인해 주세요</div>
@@ -370,7 +416,7 @@ body {
         <div class="divider"></div>
 
         <div class="section">
-          <div class="sec-title"><div class="sec-num">4</div><div class="sec-label">수업은 정해진 시간에 시작해 주세요</div></div>
+          <div class="sec-title"><div class="sec-num">4</div><div class="sec-label">수업은 정해진 시간에 도착해 주세요</div></div>
           <div class="items">
             <div class="item">무단 지각 등 사전 상의 없이 늦게 등원하는 경우 보충이 이루어지지 않을 수 있습니다</div>
             <div class="item">늦을 경우 담당 선생님께 꼭 연락 주세요</div>
@@ -401,8 +447,8 @@ body {
           <div class="process-box">
             <div class="p-row"><span class="p-badge">1단계</span><span>담당 교사 및 원장선생님의 구두 경고</span></div>
             <div class="p-row"><span class="p-badge">2단계</span><span>여러 번 반복 시 부모님 상담 진행</span></div>
+            <div class="p-row"><span class="p-badge">3단계</span><span>개선의 여지가 없을 경우 퇴원 조치</span></div>
           </div>
-          <div class="warn-box"><p>⚠️ <strong>기물 파손은 변상 처리</strong>됩니다</p></div>
         </div>
         <div class="divider"></div>
 
@@ -410,10 +456,10 @@ body {
           <div class="sec-title"><div class="sec-num">7</div><div class="sec-label">학원법에 따른 환불 규정</div></div>
           <div class="refund-table">
             <div class="r-row rh"><div class="r-cell">환불 시점</div><div class="r-cell">환불 금액</div></div>
-            <div class="r-row"><div class="r-cell">교습 시작 전</div><div class="r-cell">전액 환불</div></div>
-            <div class="r-row"><div class="r-cell">1/3 경과 전</div><div class="r-cell">2/3 금액 환불</div></div>
-            <div class="r-row"><div class="r-cell">1/2 경과 전</div><div class="r-cell">1/2 금액 환불</div></div>
-            <div class="r-row"><div class="r-cell">1/2 경과 후</div><div class="r-cell">환불 불가</div></div>
+            <div class="r-row"><div class="r-cell" contenteditable="true">교습 시작 전</div><div class="r-cell" contenteditable="true">전액 환불</div></div>
+            <div class="r-row"><div class="r-cell" contenteditable="true">1/3 경과 전</div><div class="r-cell" contenteditable="true">2/3 금액 환불</div></div>
+            <div class="r-row"><div class="r-cell" contenteditable="true">1/2 경과 전</div><div class="r-cell" contenteditable="true">1/2 금액 환불</div></div>
+            <div class="r-row"><div class="r-cell" contenteditable="true">1/2 경과 후</div><div class="r-cell" contenteditable="true">환불 불가</div></div>
           </div>
         </div>
 
@@ -429,15 +475,15 @@ body {
           </div>
           <div class="pay-item">
             <div class="pay-icon">📱</div>
-            <div class="pay-text"><strong>카카오 알림톡으로 결제 링크가 발송</strong>됩니다.<br>링크를 눌러 간편하게 결제해 주세요.</div>
+            <div class="pay-text" contenteditable="true"><strong>카카오 알림톡으로 결제 링크가 발송</strong>됩니다.<br>링크를 눌러 간편하게 결제해 주세요.</div>
           </div>
           <div class="pay-item">
             <div class="pay-icon">🏧</div>
-            <div class="pay-text">학원 내 <strong>별도 결제 단말기가 없어 현장 카드 결제가 어렵습니다.</strong><br>양해 부탁드립니다.</div>
+            <div class="pay-text" contenteditable="true">학원 내 <strong>별도 결제 단말기가 없어 현장 카드 결제가 어렵습니다.</strong><br>양해 부탁드립니다.</div>
           </div>
           <div class="pay-item">
             <div class="pay-icon">💬</div>
-            <div class="pay-text">알림톡 미수신·가상계좌·분할결제가 필요하신 경우 담당자에게 말씀해 주세요.</div>
+            <div class="pay-text" contenteditable="true">알림톡 미수신·가상계좌·분할결제가 필요하신 경우 담당자에게 말씀해 주세요.</div>
           </div>
         </div>
         <div class="divider"></div>
@@ -455,12 +501,12 @@ body {
           </div>
           <div class="faq-list">
             <div class="faq-item">
-              <div class="faq-q">Q. 지역화폐로 결제가 가능한가요?</div>
-              <div class="faq-a">A. 지역화폐 결제는 불가합니다. 카드 또는 계좌이체로 납부해 주세요.</div>
+              <div class="faq-q" contenteditable="true">Q. 지역화폐로 결제가 가능한가요?</div>
+              <div class="faq-a" contenteditable="true">A. 지역화폐 결제는 불가합니다. 카드 또는 계좌이체로 납부해 주세요.</div>
             </div>
             <div class="faq-item">
-              <div class="faq-q">Q. 카드 소유주가 다른 경우 결제가 가능한가요?</div>
-              <div class="faq-a">A. 가능합니다. 해당 소유주분께 결제 링크를 별도 발송해 드립니다.</div>
+              <div class="faq-q" contenteditable="true">Q. 카드 소유주가 다른 경우 결제가 가능한가요?</div>
+              <div class="faq-a" contenteditable="true">A. 가능합니다. 해당 소유주분께 결제 링크를 별도 발송해 드립니다.</div>
             </div>
           </div>
         </div>
@@ -468,8 +514,8 @@ body {
       </div><!-- /col-r -->
     </div><!-- /cols -->
 
-    <div class="footer">
-      <p>소중한 아이를 맡겨주셔서 감사합니다 🙏&nbsp;&nbsp;
+    <div class="footer" id="footer-guide">
+      <p id="footer-guide-txt">소중한 아이를 맡겨주셔서 감사합니다 🙏&nbsp;&nbsp;
       <strong>와와 학습 코칭 학원 수지점</strong>&nbsp;&nbsp;
       <span class="tel">031) 297-7001</span></p>
     </div>
@@ -477,14 +523,13 @@ body {
   <button class="save-btn" id="btn-guide" onclick="capture('card-guide','btn-guide','수업안내문')" style="border-radius:14px; margin-top:10px;">📋 이미지 복사하기</button>
 </div>
 
-<!-- ══════════ 탭3: 결제 안내 ══════════ -->
 <div class="tab-panel" id="tab-pay">
   <div class="card" id="card-pay" style="width:420px;">
     <div class="header">
-      <div class="logo-row">
-        <span class="logo-text">wawa</span><span class="logo-div">|</span>
-        <span class="logo-text">W+</span><span class="logo-div">|</span>
-        <span class="logo-text">글로리드</span>
+      <div class="logo-row" id="logo-row-pay">
+        <span class="logo-text" id="lt-wawa-p">wawa</span><span class="logo-div" id="ld1-p">|</span>
+        <span class="logo-text" id="lt-wplus-p">W+</span><span class="logo-div" id="ld2-p">|</span>
+        <span class="logo-text" id="lt-glory-p">글로리드</span>
       </div>
       <div class="header-title">결제 안내</div>
       <div class="header-badge">💳 수강료 결제 안내드립니다</div>
@@ -499,15 +544,15 @@ body {
         </div>
         <div class="pay-item">
           <div class="pay-icon">📱</div>
-          <div class="pay-text"><strong>카카오 알림톡으로 결제 링크가 발송</strong>됩니다.<br>링크를 눌러 간편하게 결제해 주세요.</div>
+          <div class="pay-text" contenteditable="true"><strong>카카오 알림톡으로 결제 링크가 발송</strong>됩니다.<br>링크를 눌러 간편하게 결제해 주세요.</div>
         </div>
         <div class="pay-item">
           <div class="pay-icon">🏧</div>
-          <div class="pay-text">학원 내 <strong>별도 결제 단말기가 없어 현장 카드 결제가 어렵습니다.</strong><br>양해 부탁드립니다.</div>
+          <div class="pay-text" contenteditable="true">학원 내 <strong>별도 결제 단말기가 없어 현장 카드 결제가 어렵습니다.</strong><br>양해 부탁드립니다.</div>
         </div>
         <div class="pay-item">
           <div class="pay-icon">💬</div>
-          <div class="pay-text">알림톡 미수신·가상계좌·분할결제가 필요하신 경우 담당자에게 말씀해 주세요.</div>
+          <div class="pay-text" contenteditable="true">알림톡 미수신·가상계좌·분할결제가 필요하신 경우 담당자에게 말씀해 주세요.</div>
         </div>
       </div>
       <div class="divider"></div>
@@ -537,8 +582,8 @@ body {
 
     </div>
 
-    <div class="footer">
-      <p>와와 학습 코칭 학원 수지점&nbsp;&nbsp;<span class="tel">031) 297-7001</span></p>
+    <div class="footer" id="footer-pay">
+      <p id="footer-pay-txt">와와 학습 코칭 학원 수지점&nbsp;&nbsp;<span class="tel">031) 297-7001</span></p>
     </div>
   </div>
 
@@ -551,6 +596,18 @@ body {
   </div>
 </div>
 
+<!-- ══════════ 탭4: 이미지(알리미) ══════════ -->
+<div class="tab-panel" id="tab-alimi">
+  <div style="width:100%;max-width:1200px;">
+    <iframe
+      src="wawa_alimi.html"
+      id="alimi-iframe"
+      style="width:100%;height:95vh;min-height:700px;border:none;border-radius:16px;box-shadow:0 6px 30px rgba(0,0,0,0.15);display:block;"
+      onload="this.style.height=(this.contentWindow.document.body.scrollHeight+40)+'px'"
+      scrolling="auto">
+    </iframe>
+  </div>
+</div>
 <script>
 // ── 시간표 데이터 ──
 let subjects = [
@@ -627,9 +684,14 @@ function buildPreview() {
 }
 
 function buildSms() {
-  const name = document.getElementById('inp-name').value.trim() || '○○○';
-  const paydate = document.getElementById('inp-paydate').value.trim() || '10일';
-  const total = subjects.reduce((s, x) => s + (x.fee || 0), 0);
+  const name       = document.getElementById('inp-name').value.trim() || '○○○';
+  const paydateRaw = document.getElementById('inp-paydate').value.trim();
+  // 숫자만 입력 → 자동으로 '일' 붙이기
+  const paydate    = paydateRaw
+    ? (/^\d+$/.test(paydateRaw) ? paydateRaw + '일' : paydateRaw)
+    : '10일';
+  const branch  = (document.getElementById('inp-branch').value || '').trim();
+  const total   = subjects.reduce((s, x) => s + (x.fee || 0), 0);
 
   const subjectLines = subjects
     .filter(s => s.name)
@@ -639,8 +701,13 @@ function buildSms() {
   const totalLine = subjects.filter(s=>s.name).length > 1
     ? `\n합계 : ${total.toLocaleString()}원` : '';
 
+  // 지점명 있으면 제목에 반영
+  const header = branch
+    ? `[${branch} 교육비 납부 안내]`
+    : `[WAWA 교육비 납부 안내]`;
+
   const sms =
-`[WAWA 교육비 납부 안내]
+`${header}
 
 이름 : ${name}
 과목 :
@@ -654,7 +721,154 @@ ${subjectLines}${totalLine}
 
 소중한 아이 맡겨주셔서 감사합니다!`;
 
-  document.getElementById('smsPreview').value = sms;
+  // readonly 제거 → 직접 수정 가능, 단 자동 갱신은 포커스 없을 때만
+  const ta = document.getElementById('smsPreview');
+  if (document.activeElement !== ta) {
+    ta.value = sms;
+  }
+}
+
+function applySchedTheme(color) {
+  const c2 = color + 'cc'; // 약간 연한 버전
+  const c3 = color + '22'; // 배경 연한 버전
+
+  // ── 모든 카드 헤더 ──
+  document.querySelectorAll('.header').forEach(el => {
+    el.style.background = `linear-gradient(135deg, ${color}, ${c2})`;
+  });
+
+  // ── 모든 카드 푸터 ──
+  document.querySelectorAll('.footer').forEach(el => {
+    el.style.background = `linear-gradient(135deg, ${color}, ${c2})`;
+  });
+
+  // ── 시간표 표 헤더 (sch-table thead) ──
+  document.querySelectorAll('.sch-table thead tr').forEach(el => {
+    el.style.background = `linear-gradient(135deg, ${color}, ${c2})`;
+  });
+
+  // ── 수강안내문 표 헤더 ──
+  document.querySelectorAll('.r-row.rh').forEach(el => {
+    el.style.background = color;
+  });
+
+  // ── 섹션 번호 뱃지 ──
+  document.querySelectorAll('.sec-num, .p-badge').forEach(el => {
+    el.style.background = color;
+  });
+
+  // ── hl-box (강조 박스) ──
+  document.querySelectorAll('.hl-box').forEach(el => {
+    el.style.borderLeftColor = color;
+    el.style.background = c3;
+  });
+  document.querySelectorAll('.hl-box p').forEach(el => {
+    el.style.color = color;
+  });
+
+  // ── 요일 뱃지 ──
+  document.querySelectorAll('.day-badge').forEach(el => {
+    el.style.background = color;
+  });
+
+  // ── 과목 태그 ──
+  document.querySelectorAll('.subj-tag').forEach(el => {
+    el.style.color = color;
+    el.style.borderColor = color;
+    el.style.background = c3;
+  });
+
+  // ── 수업관련안내 아이콘/제목 ──
+  document.querySelectorAll('.notice-title').forEach(el => {
+    el.style.color = color;
+  });
+
+  // ── sch-icon ──
+  document.querySelectorAll('.sch-icon').forEach(el => {
+    el.style.background = color;
+  });
+
+  // ── 결제 아이콘 배경 ──
+  document.querySelectorAll('.pay-icon-bg').forEach(el => {
+    el.style.background = c3;
+  });
+
+  // ── 저장/복사 버튼 (주황 계열만) ──
+  document.querySelectorAll('#btn-sched, #btn-guide, #btn-pay, #save-btn').forEach(el => {
+    el.style.background = `linear-gradient(135deg, ${color}, ${c2})`;
+  });
+
+  // ── 수강안내 헤더 타이틀 색 ──
+  document.querySelectorAll('.sec-label span[style*="color"]').forEach(el => {
+    el.style.color = color;
+  });
+
+  // CSS 변수 갱신
+  document.documentElement.style.setProperty('--FF6B1A', color);
+  document.documentElement.style.setProperty('--FF8C42', c2);
+}
+
+// 지점명/전화번호 → 모든 카드 푸터 동기화
+function updateBranch() {
+  const branch = (document.getElementById('inp-branch').value || '').trim();
+  const tel    = (document.getElementById('inp-tel').value || '').trim();
+  const hide   = !branch && !tel;
+
+  ['footer-sched','footer-guide','footer-pay'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = hide ? 'none' : '';
+  });
+
+  if (!hide) {
+    const telSpan  = tel ? `<span class="tel">${tel}</span>` : '';
+    const sep      = branch && tel ? '&nbsp;&nbsp;' : '';
+
+    // 지점명만 있을 때: 크고 진하게
+    const branchStyle = !tel && branch
+      ? `<strong style="font-size:1.25em;letter-spacing:0.5px;">${branch}</strong>`
+      : (branch ? `<strong>${branch}</strong>` : '');
+
+    const simple    = branchStyle + sep + telSpan;
+    const withEmoji = '소중한 아이를 맡겨주셔서 감사합니다 🙏&nbsp;&nbsp;' + branchStyle + sep + telSpan;
+
+    const fS = document.getElementById('footer-sched-txt');
+    const fG = document.getElementById('footer-guide-txt');
+    const fP = document.getElementById('footer-pay-txt');
+    if (fS) fS.innerHTML = simple;
+    if (fG) fG.innerHTML = withEmoji;
+    if (fP) fP.innerHTML = simple;
+  }
+
+  buildSms();
+}
+
+// 로고 체크박스 → 모든 카드 로고 동기화
+function updateLogo() {
+  const showWawa  = document.getElementById('logo-wawa').checked;
+  const showWplus = document.getElementById('logo-wplus').checked;
+  const showGlory = document.getElementById('logo-glory').checked;
+
+  const sets = [
+    { w:'lt-wawa-s', wp:'lt-wplus-s', g:'lt-glory-s', d1:'ld1-s', d2:'ld2-s' },
+    { w:'lt-wawa-g', wp:'lt-wplus-g', g:'lt-glory-g', d1:'ld1-g', d2:'ld2-g' },
+    { w:'lt-wawa-p', wp:'lt-wplus-p', g:'lt-glory-p', d1:'ld1-p', d2:'ld2-p' },
+  ];
+
+  sets.forEach(s => {
+    const elW  = document.getElementById(s.w);
+    const elWp = document.getElementById(s.wp);
+    const elG  = document.getElementById(s.g);
+    const d1   = document.getElementById(s.d1);
+    const d2   = document.getElementById(s.d2);
+    if (!elW) return;
+
+    elW.style.display  = showWawa  ? '' : 'none';
+    elWp.style.display = showWplus ? '' : 'none';
+    elG.style.display  = showGlory ? '' : 'none';
+
+    if (d1) d1.style.display = (showWawa && showWplus) ? '' : 'none';
+    if (d2) d2.style.display = ((showWawa || showWplus) && showGlory) ? '' : 'none';
+  });
 }
 
 function copySms() {
