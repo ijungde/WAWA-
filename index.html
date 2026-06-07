@@ -129,7 +129,10 @@ body {
 }
 
 /* 시간표 */
-/* ── 시간표 탭 반응형 레이아웃 ── */
+/* 버튼 카드 아래 간격 */
+#card-sched, #card-guide, #card-pay {
+  border-radius:20px;
+}
 .sched-layout {
   display:flex; flex-direction:column;
   align-items:center; gap:14px;
@@ -234,7 +237,7 @@ body {
   <!-- 반응형 래퍼: 노트북=가로, 모바일=세로 -->
   <div class="sched-layout">
 
-    <!-- 왼쪽(노트북) / 위(모바일): 입력 폼 + 버튼 -->
+    <!-- 왼쪽(노트북) / 위(모바일): 입력 폼 -->
     <div class="sched-col-left">
 
       <!-- 입력 폼 -->
@@ -278,15 +281,9 @@ body {
         <div style="margin-top:6px; font-size:11px; color:#bbb; text-align:center;">아래 📨 문자 복사 버튼을 눌러 복사하세요</div>
       </div>
 
-      <!-- 버튼 2개 -->
-      <div style="display:flex; gap:10px;">
-        <button class="save-btn" id="btn-sched" onclick="capture('card-sched','btn-sched','시간표')" style="font-size:13px;">📋 이미지 복사</button>
-        <button class="save-btn" id="btn-sms-main" onclick="copySms()" style="font-size:13px; background:linear-gradient(135deg,#5B67CA,#7B87EA); box-shadow:0 4px 16px rgba(91,103,202,0.35);">📨 문자 복사</button>
-      </div>
-
     </div><!-- /sched-col-left -->
 
-    <!-- 오른쪽(노트북) / 아래(모바일): 시간표 카드 -->
+    <!-- 오른쪽(노트북) / 아래(모바일): 시간표 카드 + 버튼 -->
     <div class="sched-col-right">
       <div class="card" id="card-sched" style="width:390px;">
         <div class="header" style="padding:26px 24px 22px;">
@@ -319,6 +316,11 @@ body {
         <div class="footer">
           <p>와와 학습 코칭 학원 수지점&nbsp;&nbsp;<span class="tel">031) 297-7001</span></p>
         </div>
+      </div>
+      <!-- 버튼 2개: 이미지 카드 바로 아래 -->
+      <div style="display:flex; gap:10px; width:390px; margin-top:10px;">
+        <button class="save-btn" id="btn-sched" onclick="capture('card-sched','btn-sched','시간표')" style="border-radius:14px; font-size:13px;">📋 이미지 복사</button>
+        <button class="save-btn" id="btn-sms-main" onclick="copySms()" style="border-radius:14px; font-size:13px; background:linear-gradient(135deg,#5B67CA,#7B87EA); box-shadow:0 4px 16px rgba(91,103,202,0.35);">📨 문자 복사</button>
       </div>
     </div><!-- /sched-col-right -->
 
@@ -472,7 +474,7 @@ body {
       <span class="tel">031) 297-7001</span></p>
     </div>
   </div>
-  <button class="save-btn" id="btn-guide" onclick="capture('card-guide','btn-guide','수업안내문')">📋 이미지 복사하기</button>
+  <button class="save-btn" id="btn-guide" onclick="capture('card-guide','btn-guide','수업안내문')" style="border-radius:14px; margin-top:10px;">📋 이미지 복사하기</button>
 </div>
 
 <!-- ══════════ 탭3: 결제 안내 ══════════ -->
@@ -541,7 +543,7 @@ body {
   </div>
 
   <!-- 이미지에 포함 안 되는 버튼들 -->
-  <button class="save-btn" id="btn-pay" onclick="capture('card-pay','btn-pay','결제안내')">📋 이미지 복사하기</button>
+  <button class="save-btn" id="btn-pay" onclick="capture('card-pay','btn-pay','결제안내')" style="border-radius:14px; margin-top:10px;">📋 이미지 복사하기</button>
   <div class="faq-link-wrap">
     <a class="faq-link-btn" href="https://script.google.com/macros/s/AKfycbxMXpvprA0g7WADd2JyHPEZnyW8Rnvjnt6jg5Hao0Xthyi0gpF8H0ZG4IjY5G0A-m-pSA/exec" target="_blank">
       🔗 수업 코치 응대 FAQ 시스템 바로가기
