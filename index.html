@@ -141,21 +141,100 @@ body{font-family:'Noto Sans KR',sans-serif;background:#e0e0e0;min-height:100vh;p
 #log-foot span{font-size:11px;color:#bbb;}
 #log-clear-btn{padding:5px 12px;border:1.5px solid #ffb3b3;border-radius:8px;background:#fff;color:#e74c3c;font-size:11px;font-weight:700;cursor:pointer;}
 #log-clear-btn:hover{background:#fff0f0;}
+
+/* ── 랜딩 페이지 ── */
+#landingPage{display:flex;flex-direction:column;align-items:center;min-height:100vh;background:linear-gradient(135deg,#fff5ee 0%,#fff 60%);padding:0 0 40px;}
+.landing-header{width:100%;background:linear-gradient(90deg,#FF6B1A,#FF8C42);padding:32px 24px 24px;text-align:center;color:#fff;}
+.landing-logo{font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:6px;}
+.landing-sub{font-size:13px;opacity:.85;line-height:1.6;}
+.landing-body{width:100%;max-width:480px;padding:24px 20px 0;}
+.feature-card{background:#fff;border-radius:16px;padding:18px 20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.07);border:1px solid #FFE8D6;}
+.feature-title{font-size:14px;font-weight:800;color:#FF6B1A;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.feature-desc{font-size:12.5px;color:#666;line-height:1.7;}
+.demo-card{background:#fff8f5;border:2px solid #FF6B1A;border-radius:16px;padding:18px 20px;margin-bottom:14px;}
+.demo-title{font-size:13px;font-weight:800;color:#FF6B1A;margin-bottom:10px;}
+.demo-item{font-size:12px;color:#555;line-height:1.9;padding-left:4px;}
+.demo-item::before{content:'✔ ';}
+.btn-demo{width:100%;padding:16px;background:linear-gradient(90deg,#FF6B1A,#FF8C42);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:12px;box-shadow:0 4px 14px rgba(255,107,26,.3);letter-spacing:-0.5px;}
+.btn-demo:active{transform:scale(.98);}
+.btn-kakao{width:100%;padding:14px;background:#FEE500;color:#3C1E1E;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+.notice-card{background:#f8f8f8;border-radius:14px;padding:16px 18px;margin-bottom:14px;font-size:11.5px;color:#888;line-height:1.8;}
+.notice-card b{color:#555;}
+/* ── 워터마크 ── */
+#demoBadge{position:fixed;top:66px;right:10px;background:#FF6B1A;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;z-index:9999;pointer-events:none;}
 </style>
 </head>
 <body>
+
+<!-- ══ 랜딩 페이지 ══ -->
+<div id="landingPage">
+  <div class="landing-header">
+    <div class="landing-logo">🏫 학원 운영 통합 프로그램</div>
+    <div class="landing-sub">수업 준비에 집중할 수 있도록<br>반복 업무를 자동화했습니다</div>
+  </div>
+  <div class="landing-body">
+
+    <div style="height:20px"></div>
+
+    <div class="feature-card">
+      <div class="feature-title">📅 시간표 &amp; 수업 안내문</div>
+      <div class="feature-desc">학생별 시간표 이미지 자동 생성, 교육비 납부 안내 문자, 수업 안내문 이미지를 클릭 한 번으로 만들어드립니다.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">📸 알리미 이미지</div>
+      <div class="feature-desc">수업 관련 안내 이미지를 간편하게 제작합니다. 매번 직접 만드는 번거로움 없이 빠르게 완성됩니다.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">📝 월간 평가서</div>
+      <div class="feature-desc">학생별 월간 학습 레포트를 작성하고 이미지로 저장합니다. 깔끔하고 가독성 높은 평가서를 자동으로 완성합니다.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-title">👥 원생 관리</div>
+      <div class="feature-desc">원생 명단, 성적, 휴회 이력, 변경 이력을 한 곳에서 관리합니다. 매번 엑셀을 수정하는 번거로움을 없앴습니다.</div>
+    </div>
+
+    <div class="demo-card">
+      <div class="demo-title">🎯 체험판 안내</div>
+      <div class="demo-item">누구나 무료로 체험 가능합니다</div>
+      <div class="demo-item">브라우저를 닫으면 데이터가 초기화됩니다</div>
+      <div class="demo-item">이미지에 체험판 워터마크가 표시됩니다</div>
+      <div class="demo-item">오류·개선사항은 아래 오픈톡으로 알려주세요</div>
+    </div>
+
+    <button class="btn-demo" onclick="enterDemo()">🚀 체험하기</button>
+
+    <button class="btn-kakao" onclick="window.open('https://open.kakao.com/o/gBvK2izi','_blank')">
+      <span style="font-size:18px">💬</span> 오류신고 &amp; 문의사항
+    </button>
+
+    <div class="notice-card">
+      <b>[정식 버전 안내]</b><br>
+      구매자 구글 계정에 직접 설치해드립니다.<br>
+      초기 설정 · 백업 · 복구 기능 포함<br>
+      구매 후 1개월 오류 수정 지원<br><br>
+      <b>[유의사항]</b><br>
+      1개 지점 라이선스 기준 · 재배포 및 무단 공유 금지<br>
+      기능 추가 및 커스텀 수정은 별도 협의
+    </div>
+
+  </div>
+</div><!-- /landingPage -->
+
 
 <!-- 탭 네비 (결제 안내 제거) -->
 <div class="tab-nav">
   <button class="tab-btn active" onclick="switchTab('sched')">📅 시간표</button>
   <button class="tab-btn"        onclick="switchTab('guide')">📋 수업 안내문</button>
   <button class="tab-btn"        onclick="switchTab('alimi')">📸 이미지</button>
-  <button class="tab-btn external" onclick="openLink('https://ijungde.github.io/-/')">📝 평가서</button>
-  <button class="tab-btn external" onclick="openLink('https://ijungde.github.io/manager/')">👥 원생관리</button>
+  <button class="tab-btn external" onclick="openLink('https://ijungde.github.io/-/?demo')">📝 평가서</button>
+  <button class="tab-btn external" onclick="openLink('https://ijungde.github.io/manager/?demo')">👥 원생관리</button>
 </div>
 
 <!-- ══ 탭1: 시간표 ══ -->
-<div class="tab-panel active" id="tab-sched">
+<div id="mainContent" style="display:none"><div class="tab-panel active" id="tab-sched">
   <div class="sched-layout">
     <div class="sched-col-left">
       <div class="sched-box">
@@ -342,11 +421,12 @@ body{font-family:'Noto Sans KR',sans-serif;background:#e0e0e0;min-height:100vh;p
 <!-- ══ 탭3: 이미지 ══ -->
 <div class="tab-panel" id="tab-alimi">
   <div style="width:100%;max-width:1200px;">
-    <iframe src="wawa_alimi.html" id="alimi-iframe"
+    <iframe src="https://ijungde.github.io/wawa_alimi.html" id="alimi-iframe"
       style="width:100%;height:95vh;min-height:700px;border:none;border-radius:16px;box-shadow:0 6px 30px rgba(0,0,0,0.15);display:block;"
       scrolling="auto"></iframe>
   </div>
 </div>
+</div><!-- /mainContent -->
 
 <script>
 let subjects=[{name:'',days:'',fee:0}];
@@ -478,27 +558,71 @@ function copySms(){
 
 function openLink(url){window.open(url,'_blank');}
 
+// ── 데모 모드 ──
+var isDemo = true; // 체험판은 항상 데모
+
+function enterDemo(){
+  document.getElementById('landingPage').style.display='none';
+  var tabBar = document.querySelector('.tab-bar');
+  if(tabBar) tabBar.style.display='flex';
+  var mainContent = document.getElementById('mainContent');
+  if(mainContent) mainContent.style.display='block';
+  var b=document.getElementById('demoBadge');
+  if(b) b.style.display='block';
+  // 데모모드: localStorage 초기화 (기존 데이터 안 보이게)
+  try{ localStorage.clear(); }catch(e){}
+  // 첫 탭 활성화
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  var firstTab = document.getElementById('tab-sched');
+  if(firstTab) firstTab.classList.add('active');
+  var firstBtn = document.querySelector('.tab-btn');
+  if(firstBtn) firstBtn.classList.add('active');
+}
+
 function switchTab(name){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  event.target.classList.add('active');
+  // event가 있을 때만 active 추가
+  if(typeof event !== 'undefined' && event && event.target){
+    event.target.classList.add('active');
+  }
 }
 
 async function capture(cardId,btnId,name){
+  // 랜딩 페이지가 열려있으면 먼저 체험 모드로 진입
+  var landing = document.getElementById('landingPage');
+  if(landing && landing.style.display !== 'none') { enterDemo(); }
   const btn=document.getElementById(btnId);
   const card=document.getElementById(cardId);
   document.activeElement.blur();
   btn.textContent='⏳ 변환 중...';btn.disabled=true;
   try{
     const canvas=await html2canvas(card,{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false,allowTaint:true});
+    // 데모 워터마크 추가
+    if(isDemo){
+      const ctx=canvas.getContext('2d');
+      const w=canvas.width, h=canvas.height;
+      ctx.save();
+      ctx.globalAlpha=0.25;
+      ctx.fillStyle='#FF6B1A';
+      ctx.font='bold '+Math.round(w*0.12)+'px Noto Sans KR,sans-serif';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.translate(w/2,h/2);
+      ctx.rotate(-Math.PI/4);
+      ctx.fillText('체험판',0,-h*0.15);
+      ctx.fillText('DEMO',0,h*0.15);
+      ctx.restore();
+    }
     const blob=await new Promise(res=>canvas.toBlob(res,'image/png'));
     let copied=false;
     try{await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);copied=true;}catch(e){}
     if(copied){btn.textContent='✅ 복사 완료! 카톡에 붙여넣기 하세요';}
     else{
       const w=window.open('');
-      if(w){const url=URL.createObjectURL(blob);w.document.write(`<html><body style="margin:0;background:#222;display:flex;flex-direction:column;align-items:center;padding:16px;gap:12px;"><p style="color:#fff;font-family:sans-serif;font-size:14px;">📱 이미지를 <b>길게 눌러</b> 저장 후 카톡으로 전송하세요</p><img src="${url}" style="max-width:100%;border-radius:8px;"/></body></html>`);btn.textContent='✅ 새 탭에서 저장하세요';}
+      if(w){const url=URL.createObjectURL(blob);w.document.write(`<html><body style="margin:0;background:#222;display:flex;flex-direction:column;align-items:center;padding:16px;gap:12px;"><p style="color:#fff;font-family:sans-serif;font-size:14px;">📱 이미지를 <b>길게 눌러</b> 저장 후 카톡으로 전송하세요</p><img src="${url}" style="max-width:100%;border-radius:8px;"/><div id="demoBadge" style="display:none">체험판</div>
+</body></html>`);btn.textContent='✅ 새 탭에서 저장하세요';}
       else{const a=document.createElement('a');a.download='학원안내_'+name+'.png';a.href=canvas.toDataURL('image/png');a.click();btn.textContent='💾 저장 완료!';}
     }
     btn.classList.add('ok');
@@ -511,6 +635,7 @@ function isStorageAvailable(){try{const t='__t__';localStorage.setItem(t,t);loca
 let _warnShown=false;
 
 function saveData(){
+  if(isDemo) return; // 데모모드: 저장 안 함
   try{
     if(!isStorageAvailable()){if(!_warnShown){_warnShown=true;alert('⚠️ 브라우저 설정에 의해 데이터 저장이 차단되어 있습니다.');}return;}
     const ceData={};
@@ -655,5 +780,6 @@ document.addEventListener('paste',function(e){
     </div>
   </div>
 </div>
+<div id="demoBadge" style="display:none">체험판</div>
 </body>
 </html>
